@@ -14,6 +14,7 @@
         (not(acquiring_imgs robot1))
 
         (= (num_id_detected) 0)
+        (= (num_photo_taken) 0)
 
         (marker_at m1 p1)
         (marker_at m2 p2)
@@ -35,21 +36,23 @@
         (not (photo_taken m3))
         (not (photo_taken m4))
 
-        ; (= (id m1) -1)
-        ; (= (id m2) -1)
-        ; (= (id m3) -1)
-        ; (= (id m4) -1)
+        (photo_untaken m1)
+        (photo_untaken m2)
+        (photo_untaken m3)
+        (photo_untaken m4)
+
+        (is_first m3)
+        (is_next m4 m3)
+        (is_next m1 m4)
+        (is_next m2 m1)
     )
 
     (:goal
         ( and
-            ; (visited m1)
-            ; (visited m2)
-            ; (visited m3)
-            ; (visited m4)
-            
-            (acquiring_imgs robot1)
-            ;(robot_at robot base)
+            (photo_taken m1)
+            (photo_taken m2)
+            (photo_taken m3)
+            (photo_taken m4)
         )
     )
 )

@@ -1,7 +1,5 @@
 (define (domain ass_domain)
-    (:requirements :strips :typing :adl :fluents :durative-actions 
-    :negative-preconditions :numeric-fluents :disjunctive-preconditions 
-    :quantified-preconditions :equality :continuous-effects)
+    (:requirements :strips :typing :durative-actions :numeric-fluents)
 
     (:types
         robot
@@ -21,12 +19,13 @@
         (robot_free ?r - robot)
         (detecting ?r - robot)
         (acquiring_imgs ?r - robot)
+
     )
 
     (:functions
         (state ?s - robot)
         (num_id_detected)
-        ;(id ?id - marker)
+        (num_photo_taken)
     )
 
     (:durative-action detect_id
@@ -64,23 +63,48 @@
     )
 
     
-    (:durative-action capture_img
-        :parameters (?r - robot ?p1 ?p2 - point ?m1 ?m2 - marker)
+    (:durative-action capture_first_img
+        :parameters (?r - robot ?p1 ?p2 - point ?m1 - marker)
         :duration ( = ?duration 5)
         :condition (and
-            (at start(or 
-                (and (photo_untaken ?m1) (is_first ?m1) (visited ?m1))
-                (and (photo_untaken ?m1) (is_next ?m1 ?m2) (photo_taken ?m2))))
-            (at start(= (state ?r) 1))
+            (at start(photo_untaken ?m1))
+            (at start(is_first ?m1))
+            (at start(acquiring_imgs ?r))
             (over all(marker_at ?m1 ?p1))
             (at start(robot_at ?r ?p2))
-            ;(over all(ready_to_acquire ?r))
+            (at start(robot_free ?r))
         )
         :effect (and
+            (at start(not(robot_free ?r)))
+            (at end(robot_free ?r))
             (at end(robot_at ?r ?p1))
             (at end(not (robot_at ?r ?p2)))
             (at end(photo_taken ?m1))
-            (at end(not(photo_untaken ?m1)))    
+            (at end(not(photo_untaken ?m1)))  
+            (at end(increase (num_photo_taken) 1))  
+        )
+    )
+
+    (:durative-action capture_other_imgs
+        :parameters (?r - robot ?p1 ?p2 - point ?m1 ?m2 - marker)
+        :duration ( = ?duration 5)
+        :condition (and
+            (at start(photo_untaken ?m1))
+            (at start(is_next ?m1 ?m2))
+            (at start(photo_taken ?m2))
+            (at start(acquiring_imgs ?r))
+            (over all(marker_at ?m1 ?p1))
+            (at start(robot_at ?r ?p2))
+            (at start(robot_free ?r))
+        )
+        :effect (and
+            (at start(not(robot_free ?r)))
+            (at end(robot_free ?r))
+            (at end(robot_at ?r ?p1))
+            (at end(not (robot_at ?r ?p2)))
+            (at end(photo_taken ?m1))
+            (at end(not(photo_untaken ?m1)))  
+            (at end(increase (num_photo_taken) 1))  
         )
     )
 )
