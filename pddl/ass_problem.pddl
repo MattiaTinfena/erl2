@@ -10,6 +10,10 @@
     (:init
         (robot_at robot1 base)
         (robot_free robot1)
+        (detecting robot1)
+        (not(acquiring_imgs robot1))
+
+        (= (num_id_detected) 0)
 
         (marker_at m1 p1)
         (marker_at m2 p2)
@@ -35,18 +39,16 @@
         ; (= (id m2) -1)
         ; (= (id m3) -1)
         ; (= (id m4) -1)
-
-        (=(state robot1) 0)
     )
 
     (:goal
         ( and
-            (visited m1)
-            (visited m2)
-            (visited m3)
-            (visited m4)
+            ; (visited m1)
+            ; (visited m2)
+            ; (visited m3)
+            ; (visited m4)
             
-            ;(=(state robot1) 1)
+            (acquiring_imgs robot1)
             ;(robot_at robot base)
         )
     )

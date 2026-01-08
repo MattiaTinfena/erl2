@@ -1,10 +1,7 @@
 (define (domain ass_domain)
-    (:requirements :strips :typing :fluents :durative-actions 
+    (:requirements :strips :typing :adl :fluents :durative-actions 
     :negative-preconditions :numeric-fluents :disjunctive-preconditions 
     :quantified-preconditions :equality :continuous-effects)
-    
-    
-    ; (:requirements :strips :typing :fluents :durative-actions :adl)
 
     (:types
         robot
@@ -22,10 +19,13 @@
         (photo_taken ?m - marker)
         (photo_untaken ?m - marker)
         (robot_free ?r - robot)
+        (detecting ?r - robot)
+        (acquiring_imgs ?r - robot)
     )
 
     (:functions
         (state ?s - robot)
+        (num_id_detected)
         ;(id ?id - marker)
     )
 
@@ -33,7 +33,7 @@
         :parameters (?r - robot ?p1 ?p2 - point ?m - marker)
         :duration ( = ?duration 5)
         :condition (and
-            (at start(= (state ?r) 0))
+            (at start(detecting ?r))
             (over all(marker_at ?m ?p1))
             (at start(unvisited ?m))
             (at start(robot_at ?r ?p2))
@@ -46,18 +46,20 @@
             (at end(not(robot_at ?r ?p2)))
             (at end(not(unvisited ?m)))
             (at end(visited ?m))
+            (at end(increase (num_id_detected) 1))
         )
     )
     
 
-    (:action change_to_photo_state
+    (:action change_to_acquire_state
         :parameters (?r - robot)
         :precondition (and 
-            ;(forall (?m - marker) (visited ?m))
-            (=(state ?r) 0)
+            (detecting ?r)
+            (= (num_id_detected) 4)
         )
         :effect(and
-            (assign (state ?r) 1)
+            (not(detecting ?r))
+            (acquiring_imgs ?r)
         )
     )
 
@@ -72,6 +74,7 @@
             (at start(= (state ?r) 1))
             (over all(marker_at ?m1 ?p1))
             (at start(robot_at ?r ?p2))
+            ;(over all(ready_to_acquire ?r))
         )
         :effect (and
             (at end(robot_at ?r ?p1))
