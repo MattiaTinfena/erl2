@@ -8,6 +8,7 @@
     )
 
     (:init
+        (= (num_marker) 4)
         (robot_at robot1 base)
         (robot_free robot1)
         (detecting robot1)
@@ -15,6 +16,12 @@
 
         (= (num_id_detected) 0)
         (= (num_photo_taken) 0)
+
+        (is_base base)
+        (not(is_base p1))
+        (not(is_base p2))
+        (not(is_base p3))
+        (not(is_base p4))
 
         (marker_at m1 p1)
         (marker_at m2 p2)
@@ -53,6 +60,7 @@
             (photo_taken m2)
             (photo_taken m3)
             (photo_taken m4)
+            (robot_at robot1 base)
         )
     )
 )

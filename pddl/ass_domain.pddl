@@ -19,6 +19,7 @@
         (robot_free ?r - robot)
         (detecting ?r - robot)
         (acquiring_imgs ?r - robot)
+        (is_base ?p - point)
 
     )
 
@@ -26,6 +27,7 @@
         (state ?s - robot)
         (num_id_detected)
         (num_photo_taken)
+        (num_marker)
     )
 
     (:durative-action detect_id
@@ -49,12 +51,11 @@
         )
     )
     
-
     (:action change_to_acquire_state
         :parameters (?r - robot)
         :precondition (and 
             (detecting ?r)
-            (= (num_id_detected) 4)
+            (= (num_id_detected) (num_marker))
         )
         :effect(and
             (not(detecting ?r))
@@ -62,7 +63,6 @@
         )
     )
 
-    
     (:durative-action capture_first_img
         :parameters (?r - robot ?p1 ?p2 - point ?m1 - marker)
         :duration ( = ?duration 5)
@@ -105,6 +105,23 @@
             (at end(photo_taken ?m1))
             (at end(not(photo_untaken ?m1)))  
             (at end(increase (num_photo_taken) 1))  
+        )
+    )
+
+    (:durative-action return_to_base
+        :parameters (?r - robot ?base ?p - point)
+        :duration (= ?duration 7)
+        :condition (and 
+            (at start(robot_free ?r))
+            (at start(is_base ?base))
+            (at start(robot_at ?r ?p))
+            (at start(= (num_photo_taken) (num_marker)))
+        )
+        :effect (and 
+            (at start(not(robot_free ?r)))
+            (at end(robot_free ?r))
+            (at end(robot_at ?r ?base))
+            (at end(not(robot_at ?r ?p)))
         )
     )
 )
