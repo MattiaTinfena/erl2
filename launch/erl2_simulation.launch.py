@@ -38,17 +38,17 @@ def generate_launch_description():
     )
 
     x_arg = DeclareLaunchArgument(
-        'x', default_value='2.5',
+        'x', default_value='0.0',
         description='x coordinate of spawned robot'
     )
 
     y_arg = DeclareLaunchArgument(
-        'y', default_value='1.5',
+        'y', default_value='-1.5',
         description='y coordinate of spawned robot'
     )
 
     yaw_arg = DeclareLaunchArgument(
-        'yaw', default_value='0.3',
+        'yaw', default_value='0.0',
         description='yaw angle of spawned robot'
     )
 
